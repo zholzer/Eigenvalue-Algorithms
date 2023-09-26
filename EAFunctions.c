@@ -8,21 +8,30 @@ void cross_product(float vector_A[10][10], float vector_b[10]){
 }
 
 int main(){
-    int i,j,n; 
-    float A[10][10],b[10],P[10];
-    printf("\nEnter the elements of your 2x2 matrix: \n"); 
-    for (i = 0; i < 2; i++) {
-        for (j = 0; j < 2; j++) {
-            printf("A[%d][%d]=", i,j);
-            scanf("%f",& A[i][j]);
-            }    
+    int row; int column; int n; 
+    float A[100][100];
+    float b[100];
+
+    printf("Enter the order of your matrix A: ");
+    scanf("%d",&n);
+
+    printf("Enter the elements of your square matrix A: \n");
+    for (row=0; row < n; ++row){
+        for (column=0; column < n; ++column){
+            printf("A[%d][%d]= " ,row,column); 
+            scanf("%f", &A[row][column]); 
+            }
         }
-    
-    printf("\nEnter the elements of your 2-element vector: \n");
-    for (i = 0; i < 2; i++){
-        printf("b[%d]=",i);
-        scanf("%f",& b[i]);
+        
+            
+    printf("Enter the elements of your b vector: \n");
+    for (row=0; row < n; ++row){
+        printf("b[%d]= ",row);
+        scanf("%f", &b[row]);
     }
+    return 0;
+        
+}
     cross_product(A,b);
     return 0;
 }
