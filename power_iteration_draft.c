@@ -30,7 +30,7 @@ void matrix_multiplication(int n, double matrix1[n][n], double matrix2[n][1],dou
     display_matrix(n,1,result); 
 }
 
-int norm (int n, double vec[], double *norm_result){ 
+int norm (int n, double vec[]){ 
     int i;
     double sum = 0.0;              // initialize the sum
 
@@ -38,8 +38,7 @@ int norm (int n, double vec[], double *norm_result){
         sum += vec[i]*vec[i];
     }
     // after the loop, square root the sum
-    *norm_result = sqrt(sum);
-    printf("The norm: %f \n",*norm_result);
+    return sqrt(sum);
 }
 
 void scalarToMatrixMultiplication(int n, int m, double scalar, double A[n][m], double scalar_result[n][m]){
@@ -82,40 +81,40 @@ int main(void){
     printf("Matrix b:\n");
     display_matrix(2,1,matrixb); 
     int n=2; int m=1;
-    double eigenvalue[n][1]; //eigenvalue A*b
+    double eigenvalue[n][1]; //e A*b
     double result_multi[n][1];
     double prev_eigenvalue[n][1]; 
-    double result_norm; 
+    double eigenvalue_norm; 
     
-    //matrix_multiplication(n,matrixA,matrixb,result);
-   
-    //norm(n,result,&result_norm); 
-    //printf("value of max %f \n",1/result_norm); 
     
     double result_scalar[n][1]; //eigenvector 
     double prev_result_scalar[n][1];
     //scalarToMatrixMultiplication(n,m,(1/result_norm),result,scalar_result);
     
-    int max_iterations = 1000; 
+    int max_iterations = 100; 
     int iterations = 0; 
     while(iterations < max_iterations){
         matrix_multiplication(n, matrixA, matrixb, eigenvalue);
-        norm(n, eigenvalue, &result_norm);
-        printf("Iteration %d - the norm of A*b %f\n", iterations + 1, 1 / result_norm);
-        scalarToMatrixMultiplication(n, m, (1 / result_norm), eigenvalue, result_scalar);
+        eigenvalue_norm = norm(n, eigenvalue);
+
+        printf("Iteration %d - the norm of A*b %f\n", iterations + 1, eigenvalue_norm);
+        scalarToMatrixMultiplication(n, m, (1 / eigenvalue_norm), eigenvalue, result_multi);
 
         if (areMatricesEqual(n,1,eigenvalue,prev_eigenvalue)){
             printf("Converged after %d iterations.\n", iterations);
-            printf("Dominant Eigenvalue: %f\n", eigenvalue);
+            printf("Dominant Eigenvalue: %f\n", 1 / eigenvalue_norm);
             printf("Eigenvector:\n");
-            display_vector(n, result_scalar);
+            display_matrix(n, 1, result_multi);
             break;
         }
 
-        // Update for the next iteration
+        // Update ||A*b|| for the next iteration
         for (int i = 0; i < n; i++) {
-            prev_result_scalar[i][0] = result_scalar[i][0];
             prev_eigenvalue[i][0] = eigenvalue[i][0]; 
+        }
+        // Update matrixb for the next iteration
+        for (int i = 0; i < n; i++){
+            matrixb[i][0] = result_multi[i][0];
         }
 
         iterations++;
@@ -124,11 +123,7 @@ int main(void){
 
     if (iterations >= max_iterations) {
         printf("Reached maximum iterations without convergence.\n");
-    } else {
-        printf("Convergence reached in %d iterations.\n", iterations);
-        printf("Eigenvalue: %f\n",eigenvalue);
-        printf("Eigenvector: \n");
-        display_matrix(n,1,result_scalar); 
     }
     return 0; 
 }
+
