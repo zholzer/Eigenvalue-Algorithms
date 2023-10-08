@@ -23,7 +23,7 @@ void matrix_multiplication(int n, double matrix1[n][n], double matrix2[n],double
 
 void power_iteration(int n, double matrixA[n][n], double guess_eigenvector[n], double *eigenvalue, int *iterations){
     double prev_eigenvalue = 0.0;
-    while (1){
+    while (1){ //run continually until break
         double new_eigenvalue = 0.0; 
         double new_eigenvector[n];
         double prev_eigenvector[n];
