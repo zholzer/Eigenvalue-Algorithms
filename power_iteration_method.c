@@ -63,7 +63,8 @@ void power_iteration(int n, double complex matrixA[n][n], double complex guess_e
             break; 
         }
         if (j >= max_iterations){
-            printf("Reached maximum iterations. CANNOT FIND REAL EIGENVECTOR AND EIGENVALUE\n");
+            printf("Reached maximum iterations. CANNOT FIND REAL EIGENVECTOR AND EIGENVALUE. \n");
+            printf("Ignore the rest!!"\n);
         }
     } 
     printf("Number of iterations: %d \n",j);
