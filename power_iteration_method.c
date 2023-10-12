@@ -24,7 +24,7 @@ void matrix_multiplication(int n, double complex matrix1[n][n], double complex m
 
 void power_iteration(int n, double complex matrixA[n][n], double complex guess_eigenvector[n], double complex *eigenvalue){
     int max_iterations = 100;
-    int j;
+    int j = 0;
     while (j < max_iterations){
         double complex new_eigenvector[n];
 
