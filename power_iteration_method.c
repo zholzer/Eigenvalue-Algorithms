@@ -7,7 +7,7 @@ void display_matrix(int nRows, int nCols, double complex matrix[nRows][nCols]){
     int row; int column; 
     for(row=0; row < nRows; ++row){
         for(column=0; column < nCols; ++column)
-            printf("%lf %+lfi ", creal(matrix[row][column]), cimag(matrix[row][column])); 
+            printf("%f %+fi ", creal(matrix[row][column]), cimag(matrix[row][column])); 
         printf("\n");
     }
 }  
@@ -22,9 +22,12 @@ void matrix_multiplication(int n, double complex matrix1[n][n], double complex m
     }
 }
 
+double my_cabs(double complex x){
+    return sqrt(creal(x)*creal(x) + cimag(x)*cimag(x));
+}
+
 void power_iteration(int n, double complex matrixA[n][n], double complex guess_eigenvector[n], double complex *eigenvalue){
-    int max_iterations = 100;
-    int j = 0;
+    int max_iterations = 100; int j = 0;
     while (j < max_iterations){
         double complex new_eigenvector[n];
 
@@ -32,11 +35,11 @@ void power_iteration(int n, double complex matrixA[n][n], double complex guess_e
         matrix_multiplication(n,matrixA,guess_eigenvector,new_eigenvector); //new_eigenvector is matrixA*guessvectorb
         
         //Find the maximum element of new_eigenvector 
-        double max_val = cabs(new_eigenvector[0]); //cabs computes the complex absolute value
+        double max_val = my_cabs(new_eigenvector[0]); //cabs computes the complex absolute value
         int i;
         for (i = 1; i < n; i++){
-            if(cabs(new_eigenvector[i]) > max_val){
-                max_val = cabs(new_eigenvector[i]); 
+            if(my_cabs(new_eigenvector[i]) > max_val){
+                max_val = my_cabs(new_eigenvector[i]); 
             } 
         } 
         // Normalize the new_eigenvector by dividing it by the maximum element 
@@ -47,9 +50,9 @@ void power_iteration(int n, double complex matrixA[n][n], double complex guess_e
         *eigenvalue = max_val; 
         
         //Keep looping until eigvenvector of nth interation is equal to eigenvector of (n-1)th iteration
-        double complex check = 0.0 + 0.0*I;
+        double check = 0.0;
         for (i = 0; i < n; i++) {
-            check += cabs(new_eigenvector[i] - guess_eigenvector[i]);
+            check += my_cabs(new_eigenvector[i] - guess_eigenvector[i]);
         }
 
         // Update a new eigenvector as guess_eigenvector for the next iteration
@@ -59,12 +62,12 @@ void power_iteration(int n, double complex matrixA[n][n], double complex guess_e
         j++;
 
         //break out of the loop if they are equal 
-        if (cabs(check) < 1e-6) {
+        if (my_cabs(check) < 1e-6) {
             break; 
         }
         if (j >= max_iterations){
-            printf("Reached maximum iterations. CANNOT FIND REAL EIGENVECTOR AND EIGENVALUE. \n");
-            printf("Ignore the rest!!"\n);
+            printf("Reached maximum iterations. CANNOT FIND REAL EIGENVECTOR AND EIGENVALUE\n");
+            printf("Ignore the rest!\n"); 
         }
     } 
     printf("Number of iterations: %d \n",j);
@@ -72,11 +75,10 @@ void power_iteration(int n, double complex matrixA[n][n], double complex guess_e
 
 int main() {
     double complex A[2][2] = {
-        {0.0  + 0.0*I,  1.0 + 0.0*I},
-        {-1.0 + 0.0*I, 0.0 + 0.0*I}};
-    double complex guess_eigenvector[2] = {1.0 + 0.0*I,1.0 + 0.0*I};
+        {2.0  + 0.0*I,  0.0 - 4.0*I},
+        {0.0  + 4.0*I,  3.0 + 0.0*I}};
+    double complex guess_eigenvector[2] = {1.0 + 1.0*I,1.0 + 0.0*I};
     double complex eigenvalue = 0.0 + 0.0*I; 
-    int iterations = 0;
     int n=2; 
     int i;
     printf("Matrix A:\n");
@@ -84,10 +86,10 @@ int main() {
 
     power_iteration(2, A, guess_eigenvector, &eigenvalue);
 
-    printf("Dominant Eigenvalue: %lf %+lfi \n",creal(eigenvalue),cimag(eigenvalue));
+    printf("Dominant Eigenvalue: %f %+f*i \n",creal(eigenvalue),cimag(eigenvalue));
     printf("Eigenvector: \n");
     for (i = 0; i < n; i++){
-        printf("%lf %+lfi \n", creal(guess_eigenvector[i]), cimag(guess_eigenvector[i]));
+        printf("%f %+fi\n", creal(guess_eigenvector[i]), cimag(guess_eigenvector[i]));
     }
     return 0; 
 }
