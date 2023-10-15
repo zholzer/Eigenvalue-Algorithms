@@ -7,10 +7,10 @@
 // ---> GetCofactor (finds the cofactor of a matrix at a given element)
 // ---> det2by2 (finds the determinant of a 2x2 matrix)
 // ---> GetTranspose (computes the transpose of a given matrix)
-// ---> Get Determinant (computes the determinant for any NxN matrix- 2x2 determinant function is included in this)
+// ---> GetDeterminant (computes the determinant for any NxN matrix- 2x2 determinant function is included in this)
+// ---> GetInverse (puts all the above functions together and finds the inverse)
 // 
-// there will also be a main script
-// process in the main script for finding the inverse of a matrix:
+// process in the GetInverse function for finding the inverse of a matrix:
 // step 1. determinant of entire matrix (if determinant = 0, there is no inverse)
 // step 2. cofactor matrix 
 //      // find the cofactor of each element from original matrix
@@ -19,6 +19,8 @@
 //      // this new value becomes the associated element of the "cofactor matrix"
 // step 3. adjoint = (cofactor matrix)T (transpose)
 // step 4. inverse = adjoint/determinant
+//
+// there will also be a main script to define a matrix and call GetInverse
 
 // "display matrix function"
 // takes in a declared matrix A of size n x n and size n
