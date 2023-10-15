@@ -2,19 +2,23 @@
 #include <complex.h>
 #include <math.h>
 // function to find the inverse of a matrix
-// what it will consist:
-//
-// GetCofactor is a function to compute the cofactor of a matrix A[p][q]
-// within this function:
-//
-// inputs: int size of matrix N, given matrix A[N][N], empty matrix cof[N][N] to hold output,
-//         ints m/n to specify the element we're at in A
-//
-// outputs: gets the cofactor of A[m][n]
-//
+// functions included:
+// ---> displayMatrix (displays a given matrix in the terminal)
+// ---> GetCofactor (finds the cofactor of a matrix at a given element)
+// ---> det2by2 (finds the determinant of a 2x2 matrix)
+// ---> GetTranspose (computes the transpose of a given matrix)
+// ---> Get Determinant (computes the determinant for any NxN matrix- 2x2 determinant function is included in this)
+// 
 // there will also be a main script
-// within the main script, we define the matrix
-// and run a for loop to call the cofactor at each element A[p][q]
+// process in the main script for finding the inverse of a matrix:
+// step 1. determinant of entire matrix (if determinant = 0, there is no inverse)
+// step 2. cofactor matrix 
+//      // find the cofactor of each element from original matrix
+//      // take the determinant of each cofactor matrix and multiply by the element we are at
+//      // include changing +/- signs
+//      // this new value becomes the associated element of the "cofactor matrix"
+// step 3. adjoint = (cofactor matrix)T (transpose)
+// step 4. inverse = adjoint/determinant
 
 // "display matrix function"
 // takes in a declared matrix A of size n x n and size n
@@ -30,8 +34,12 @@ void displayMatrix(int n, double complex A[n][n]){
     }
 }  
 
-// cofactor function (only works for higher than 2x2 matrices)
-void GetCofactor(int N, double complex A[N][N], double complex cof[N][N], int m, int n)
+// cofactor function (only works for higher than 2x2 matrices, cofactor for 2x2 is written directly in main )
+// GetCofactor is a function to compute the cofactor of a matrix A[p][q]
+//
+// inputs: int size of matrix N, given matrix A[N][N], empty matrix cof[N][N] to hold output,
+//         ints m/n to specify the element we're at in A
+void GetCofactor(int N, double complex A[N][N], double complex cof[N-1][N-1], int m, int n)
 {
     int i, j, r, c;
 
@@ -61,22 +69,6 @@ void GetCofactor(int N, double complex A[N][N], double complex cof[N][N], int m,
 
 }
 
-// function to rewrite the matrices from an NxN to an (N-1)x(N-1)
-// this is for after calling cofactor function
-void rewrite(int N, double complex cof[N][N], double complex cofrewrite[N-1][N-1])
-    {
-        int r, c;
-         for (r = 0; r < N-1; r++)
-         {
-              for (c = 0; c < N-1; c++)
-               {
-              cofrewrite[r][c] = cof[r][c];
-            }
-        }
-    
-    }
-
-
 // function for the determinant of a 2x2 matrix
 // inputs: n size matrix, A[n][n] matrix
 double complex det2by2(int n, double complex A[n][n])
@@ -94,11 +86,7 @@ double complex det2by2(int n, double complex A[n][n])
     a = A[0][0]; b = A[0][1];
     c = A[1][0]; d = A[1][1];
 
-
     det = a*d - b*c;
-
-    //displayMatrix(n, A);
-    //printf("The determinant is %.2f %+.2fi ", creal(det),cimag(det));
 
     return det;
 
@@ -106,6 +94,7 @@ double complex det2by2(int n, double complex A[n][n])
 
 
 // take and NxN matrix and computes the transpose
+// inputs: matrix size N, given matrix, empty matrix to hold the transpose matrix
 void GetTranspose(int N, double complex matrix[N][N], double complex matrixT[N][N])
 {
     int row, col;
@@ -120,32 +109,37 @@ void GetTranspose(int N, double complex matrix[N][N], double complex matrixT[N][
 
 }
 
-// determinant function (for 3x3 + sized matrices)
+// determinant function (for any NxN matrix)
+// inputs: size N, matrix
+// output: determinant
 double complex GetDeterminant(int N, double complex matrix[N][N])
 {
-    int row, col, sign;
-    double complex det, determinant, cof[N][N], cofrewrite[N-1][N-1];
+    int sign, c;
+    double complex determinant, intmatrix[N-1][N-1];
     
+    // initialize
     determinant = 0 + 0*I;
-    
-    // expand the first row:
-    row = 0;
-    for ( col = 0; col < N; col++)
+
+    // if the matrix is 2x2
+    if (N == 2)
         {
-            // call cofactor function
-            GetCofactor(N, matrix, cof, row, col);
-            rewrite(N, cof, cofrewrite);
-
-            //if ()
-            // call the determinant function 
-            det = det2by2(N-1, cofrewrite);
-
-            // save the determinant in a sum
-            sign = pow(-1, row+col);
-            determinant = determinant + sign*det*matrix[row][col];
-
-            //printf("Determinant at [%i][%i] = %.2f %+.2fi\n", row, col, creal(determinant),cimag(determinant));
+            determinant = det2by2(N, matrix);
         }
+    
+    // else, break down the matrix
+    else{
+        // for each column in the first row:
+        for (c = 0; c < N; c++){
+
+            // call the cofactor of the row/col we are at
+            GetCofactor(N, matrix, intmatrix, 0, c);
+
+            // define sign, save the element we are at, call determinant function again
+            sign = pow(-1, c);
+            determinant = determinant + (sign * matrix[0][c]*GetDeterminant( N-1, intmatrix ));
+        }
+    }
+
     return determinant;
 }
 
@@ -156,25 +150,19 @@ int main (void)
     int i, j, N, sign;
     
     // define some matrix 
-    N = 2;
-    double complex A[2][2] = { { 2, 3},
-                    { 4, 2}
+    N = 4;
+    double complex A[4][4] = { { 1, 2-3*I, -9, 4},
+                    { 2+3*I, 5, 4, -12},
+                    {2, 4, 5+I, 0},
+                    {2, 4, 5+I, 9}
                     };
 
     // initialize for cofactor function
     double complex determinant, det, cofM[N][N];    // determinant, and cofactor matrix (det is the determinant in the cofactor loop)
 
         // get the determinant of the matrix
-        if (N == 2)
-        {
-            determinant = det2by2(N, A);
-            printf("Determinant= %.2f %+.2fi\n", creal(determinant),cimag(determinant));
-        }
-        else 
-        {
-            determinant = GetDeterminant(N, A);
-            printf("Determinant= %.2f %+.2fi\n", creal(determinant),cimag(determinant));
-        }
+        determinant = GetDeterminant(N, A);
+        printf("Determinant= %.2f %+.2fi\n", creal(determinant),cimag(determinant));
 
         // if the determinant = 0, there is no inverse!!
         if (determinant == 0) {
@@ -203,16 +191,14 @@ int main (void)
                 }
             }
 
+            // for all other N sized matrices:
             else {
-                double complex cof[N][N], cofrewrite[N-1][N-1]; // empty matrix for cofactor
-                // for all other N sized matrices:
+                double complex cof[N-1][N-1]; // empty matrix for cofactor
                 // call cofactor function
                 GetCofactor(N, A, cof, i, j);
-                rewrite(N, cof, cofrewrite);
-                displayMatrix(N,cofrewrite);
 
                 // call the determinant function 
-                det = det2by2(N-1, cofrewrite);
+                det = GetDeterminant(N-1, cof);
            }
 
 
