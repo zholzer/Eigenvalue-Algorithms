@@ -145,7 +145,7 @@ double complex GetDeterminant(int N, double complex matrix[N][N])
     return determinant;
 }
 
-int GetInverse(int N, double complex A[N][N])
+int GetInverse(int N, double complex A[N][N], double complex inverse[N][N])
 {
 
     int i, j, sign;
@@ -217,8 +217,6 @@ int GetInverse(int N, double complex A[N][N])
         //displayMatrix(N,adj);
 
     // inverse = Adjugate/determinant
-    double complex inverse[N][N];
-
     // divide the determinant from each element
     for (i = 0; i < N; i++) 
     {
@@ -247,8 +245,9 @@ int main (void)
                     {2, 4, 5+I, 9}
                     };
     
+    double complex Ainv[4][4];
     
-    GetInverse(N,A);
+    GetInverse(N,A,Ainv);
 
     return 0;
 }
