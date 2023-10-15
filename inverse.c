@@ -143,19 +143,11 @@ double complex GetDeterminant(int N, double complex matrix[N][N])
     return determinant;
 }
 
-
-// main function
-int main (void)
+int GetInverse(int N, double complex A[N][N])
 {
-    int i, j, N, sign;
+
+    int i, j, sign;
     
-    // define some matrix 
-    N = 4;
-    double complex A[4][4] = { { 1, 2-3*I, -9, 4},
-                    { 2+3*I, 5, 4, -12},
-                    {2, 4, 5+I, 0},
-                    {2, 4, 5+I, 9}
-                    };
 
     // initialize for cofactor function
     double complex determinant, det, cofM[N][N];    // determinant, and cofactor matrix (det is the determinant in the cofactor loop)
@@ -211,16 +203,16 @@ int main (void)
     }
 
     // display the cofactor matrix
-    printf("The cofactor matrix:\n");
-    displayMatrix(N,cofM);
+        //printf("The cofactor matrix:\n");
+        //displayMatrix(N,cofM);
 
     // now that we have the cofactor matrix, the transpose = Adjugate
     // adj will hold the adjugate matrix
     double complex adj[N][N];
     GetTranspose(N, cofM, adj);
 
-    printf("The adjugate:\n");
-    displayMatrix(N,adj);
+        //printf("The adjugate:\n");
+        //displayMatrix(N,adj);
 
     // inverse = Adjugate/determinant
     double complex inverse[N][N];
@@ -237,6 +229,24 @@ int main (void)
     // print
     printf("The Inverse: \n");
     displayMatrix(N,inverse);
+
+    return 0;
+}
+
+// main function
+int main (void)
+{
+    int N = 4; // define size of matrix
+
+    // define some matrix 
+    double complex A[4][4] = { { 1, 2-3*I, -9, 4},
+                    { 2+3*I, 5, 4, -12},
+                    {2, 4, 5+I, 0},
+                    {2, 4, 5+I, 9}
+                    };
+    
+    
+    GetInverse(N,A);
 
     return 0;
 }
