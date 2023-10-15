@@ -75,8 +75,8 @@ void power_iteration(int n, double complex matrixA[n][n], double complex guess_e
 
 int main() {
     double complex A[2][2] = {
-        {2.0  + 0.0*I,  0.0 - 4.0*I},
-        {0.0  + 4.0*I,  3.0 + 0.0*I}};
+        {7.33  + 0.0*I,  1.49 + 0.0*I},
+        {1.49  + 0.0*I,  -0.66 + 0.0*I}};
     double complex guess_eigenvector[2] = {1.0 + 1.0*I,1.0 + 0.0*I};
     double complex eigenvalue = 0.0 + 0.0*I; 
     int n=2; 
