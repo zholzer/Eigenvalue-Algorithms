@@ -3,17 +3,16 @@
 #include <math.h>
 #include <complex.h>
 
-void displayMatrix(int n, double complex A[n][n]){
+void displayMatrix(int n, int m, double complex A[n][m]){
     int i, j; 
     for (i=0; i<n; i++){
-      for (j=0; j<n; j++){
-            
-            printf("%.2f %+.2fi ", creal(A[i][j]),cimag(A[i][j])); 
-        
+      for (j=0; j<m; j++){
+            //printf("%f ", (float) A[i][j]);
+          printf("%.2lf %+.2lfi ", creal(A[i][j]), cimag(A[i][j])); 
       }
       printf("\n");
     }
-} 
+}
 
 void matrix_multiplication(int a, int b, double complex matrix1[a][b], int m, int n, double complex matrix2[m][n], double complex matAXmatB[a][n]){
     int i; int j; int k;
@@ -51,8 +50,7 @@ void conjugateTranspose(int n, int m, double complex A[n][m], double complex AH[
     }
 }
 
-void fillIdentityN(int n, double complex id[n][n]){
-  
+void fillIdentityN(int n, double complex id[n][n]){ 
   int i,j; 
 
   for (i=0; i<n; i++){
@@ -286,8 +284,14 @@ int GetInverse(int N, double complex A[N][N], double complex inverse[N][N])
     return 0;
 }
 
+void setNormalVec(int n, double complex v[n][1]){
+    int i; 
+    for (i=0; i<n; i++){
+        v[i][0] = 1/sqrt(n);
+    }
+}
 
-void rayleighIteration(int n, double complex matrixA[n][n], double complex guess_eigenvector[n][1], double complex *eigenvalue){
+void rayleighIteration(int n, double complex matrixA[n][n]){
     double complex Id[n][n];
     fillIdentityN(n, Id);
     double complex muId[n][n];
@@ -298,12 +302,16 @@ void rayleighIteration(int n, double complex matrixA[n][n], double complex guess
     double complex rayNum[1][1];
     double complex rayDen[1][1];
     double complex AminMuI[n][n];
+    // normalized vector as starting guess
+    double complex guess_eigenvector[n][1];
+    setNormalVec(n, guess_eigenvector);
+    double complex eigenvalue = 1.0 + 0.0*I;
     while (j < max_iterations){
         double complex new_eigenvector[n][1];
 
         // create identity function
         // - mew * I
-        scalarByMatrixMultiplication(-1*(*eigenvalue), n, n, Id, muId);
+        scalarByMatrixMultiplication(-1*(eigenvalue), n, n, Id, muId);
         // A + (- mew * I)
         matrix_addition(n, n, matrixA, muId, AminMuI);
         GetInverse(n,AminMuI,Ainv);
@@ -345,10 +353,11 @@ void rayleighIteration(int n, double complex matrixA[n][n], double complex guess
         matrix_multiplication(1,n,bH,n,1,Ab,rayNum);
         // calculate denominator bH(b)
         matrix_multiplication(1,n,bH,n,1,guess_eigenvector,rayDen);
-        *eigenvalue = rayNum[0][0] / rayDen[0][0];
+        eigenvalue = rayNum[0][0] / rayDen[0][0];
 
         //break out of the loop if they are equal 
         if (my_cabs(check) < 1e-6) {
+            printf("Dominant Eigenvalue: %f %+f*i \n",creal(eigenvalue),cimag(eigenvalue));
             break; 
         }
         if (j >= max_iterations){
@@ -357,25 +366,4 @@ void rayleighIteration(int n, double complex matrixA[n][n], double complex guess
         }
     } 
     printf("Number of iterations: %d \n",j);
-}
-
-
-
-int main() {
-    double complex A[3][3] = {{1, 2, 3+I}, {2, 2, 3}, {3-I, 3, 3}};
-    double complex guess_eigenvector[2][1] = {{1.0 + 0.0*I},{1.0 + 0.0*I}};
-    double complex eigenvalue = 1.0 + 0.0*I; 
-    int n=3; 
-    int i;
-    printf("Matrix A:\n");
-    displayMatrix(n,A);
-
-    rayleighIteration(n, A, guess_eigenvector, &eigenvalue);
-
-    printf("Dominant Eigenvalue: %f %+f*i \n",creal(eigenvalue),cimag(eigenvalue));
-    printf("Eigenvector: \n");
-    for (i = 0; i < n; i++){
-        printf("%f %+fi\n", creal(guess_eigenvector[i][0]), cimag(guess_eigenvector[i][0]));
-    }
-    return 0; 
 }
