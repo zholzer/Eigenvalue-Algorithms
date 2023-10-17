@@ -273,19 +273,63 @@ int GetInverse(int N, double complex A[N][N], double complex inverse[N][N])
     return 0;
 }
 
+void matrix_addition(int n, int m, double complex A[n][m], double complex B[n][m], double complex APlusB[n][m]){
+    int i; int j; 
+
+    for(i=0; i < n; ++i){
+        for(j=0; j < m; ++j){
+            APlusB[i][j] = A[i][j] + B[i][j]; 
+        }
+    }
+}
+
+void scalarByMatrixMultiplication(double complex scalar, int n, int m, double complex A[n][m], double complex scalarXA[n][m]){
+    int i; int j; 
+
+    for(i=0; i < n; ++i){
+        for(j=0; j < m; ++j){
+            scalarXA[i][j] = scalar*A[i][j]; 
+        }
+    }
+}
+
+void fillIdentityN(int n, double complex id[n][n]){
+  
+  int i,j; 
+
+  for (i=0; i<n; i++){
+    for (j=0; j<n; j++){
+      
+      if (i == j){
+        id[i][j] = 1.0; // sets diagonal as 1
+      }
+  
+      else{
+        id[i][j] = 0.0; // sets non-diagonal as 0
+      }
+        	}
+	}	
+}
+
 int main() {
-    double complex A[2][2] = {
-        {6,  -1},
-        {2,  3}};
-    double complex guess_eigenvector[2] = {1.0 + 1.0*I,1.0 + 0.0*I};
-    double complex eigenvalue = 0.0 + 0.0*I; 
-    int n=2; 
+    double complex A[3][3] = {{1, 2, 3+I}, {2, 2, 3}, {3-I, 3, 3}};
+    double complex guess_eigenvector[2] = {1.0 + 0.0*I,1.0 + 0.0*I};
+    // guess initial eigenvalue here
+    double complex eigenvalue = -1.5 + 0.0*I; 
+    int n=3; 
     int i;
     printf("Matrix A:\n");
     displayMatrix(2,A);
 
+    double complex Id[n][n];
     double complex Ainv[n][n];
 
+    // create identity function
+    fillIdentityN(n, Id);
+    // - mew * I
+    scalarByMatrixMultiplication(-1*eigenvalue, n, n, Id, Id);
+    // A + (- mew * I)
+    matrix_addition(n, n, A, Id, A);
     GetInverse(n,A,Ainv);
     printf("Inverse of Matrix A:\n");
     displayMatrix(2,Ainv);
