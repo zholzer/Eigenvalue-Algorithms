@@ -3,14 +3,13 @@
 #include <math.h>
 #include <complex.h>
 
-float norm (float complex vec[], int n)
+double norm (double complex vec[], int n)
 {
-    float term, sum;  
+    double term, sum;  
     int ii;
 
     // error code for an empty vector
-    if (n == 0)
-    {
+    if (n == 0){
         printf("Error: Empty Vector. Retry.\n");
         return 1;
     }
@@ -19,8 +18,7 @@ float norm (float complex vec[], int n)
     // verify what they entered
     printf("You entered: [ ");
 
-    for (ii = 0; ii < n; ++ii)
-    {
+    for (ii = 0; ii < n; ++ii){
     printf("%.2f %+.2fi ", creal(vec[ii]),cimag(vec[ii]));
     }
 
@@ -29,14 +27,13 @@ float norm (float complex vec[], int n)
 
     sum = 0;              // initialize the sum
 
-    for (ii = 0; ii < n; ++ii)
-    {
+    for (ii = 0; ii < n; ++ii){
         term = pow(creal(vec[ii]),2) + pow(cimag(vec[ii]),2);
         sum = sum + term;
     }
 
     // after the loop, square root the sum
-    float sol = sqrt(sum);
+    double sol = sqrt(sum);
 
     // print the norm
     printf("and the norm is %f\n",sol);
@@ -47,7 +44,7 @@ float norm (float complex vec[], int n)
 int main (void)
 {
     // define a vector 
-    float complex vec[] = {1 + 2*I, 7 +  I};
+    double complex vec[] = {1 + 2*I, 7 +  I};
     int n = sizeof(vec) / sizeof(vec[0]);
 
     // run the program
