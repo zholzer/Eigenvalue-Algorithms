@@ -2,6 +2,7 @@
 #include <math.h>
 #include <complex.h>
 #include <string.h>
+#include <stdlib.h>
 #include "functions.h"
 // function declarations
 
@@ -21,7 +22,7 @@ int main(void){
 
     case 2:
         strcpy(fileName, "testCase2.txt");
-        printf("You chose test file two with a 10 x 10 real matrix.\n");
+        printf("You chose test file two with a 3 x 3 matrix.\n");
         break;
 
     case 3:
@@ -59,7 +60,8 @@ int main(void){
     }
     
     dim = sqrt(count/2);
-    double complex A[dim][dim];
+    //double complex A[dim][dim];
+    double complex (*A)[dim] = malloc(sizeof(double complex[dim][dim]));
 
     rewind(testFile);
     for (i=0; i<dim; i++){
@@ -78,7 +80,7 @@ int main(void){
     }
     fclose(testFile);
     
-    printf("This test file contains the matrix: ");
+    printf("This test file contains the matrix: \n");
     displayMatrix(dim, dim, A);
 
     int iter;
@@ -91,7 +93,15 @@ int main(void){
         }
         else{booL = 1;}
     }
-    
-    LanczosAlgorithm(dim, A, iter);
+    //printf("The Power Iteration produces ");
+    //power_iteration(dim, A); // runs with 10 by 10
+    //printf("The Power Iteration produces ");
+    //rayleighIteration(dim, A); // very slow with 10 by 10
+    printf("The Lanczos Algorithm produces ");
+    LanczosAlgorithm(dim, A, iter); // segfault 10 by 10
+    //free(A);
     return 0;
 }
+
+// https://stackoverflow.com/questions/36890624/malloc-a-2d-array-in-c
+// https://stackoverflow.com/questions/36890624/malloc-a-2d-array-in-c
