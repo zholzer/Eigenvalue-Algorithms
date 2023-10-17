@@ -196,12 +196,9 @@ double complex GetDeterminant(int N, double complex matrix[N][N])
     return determinant;
 }
 
-int GetInverse(int N, double complex A[N][N], double complex inverse[N][N])
-{
-
+int GetInverse(int N, double complex A[N][N], double complex inverse[N][N]){
     int i, j, sign;
     
-
     // initialize for cofactor function
     double complex determinant, det, cofM[N][N];    // determinant, and cofactor matrix (det is the determinant in the cofactor loop)
 
@@ -246,12 +243,10 @@ int GetInverse(int N, double complex A[N][N], double complex inverse[N][N])
                 det = GetDeterminant(N-1, cof);
            }
 
-
             // save the determinant in the corresponding element
             // this is the cofactor matrix cofM
             sign = pow(-1, i+j);
             cofM[i][j] = det*sign;
-
         }
     }
 
@@ -305,7 +300,6 @@ void vectorTranspose(int N, double complex matrix[N][1], double complex matrixT[
 
 void inverseIteration(int n, double complex matrixA[n][n]){
     double complex Id[n][n];
-    fillIdentityN(n, Id);
     double complex muId[n][n];
     double complex Ainv[n][n];
     int max_iterations = 100; int j = 0;
@@ -317,14 +311,15 @@ void inverseIteration(int n, double complex matrixA[n][n]){
     // normalized vector as starting guess
     double complex guess_eigenvector[n][1];
     setNormalVec(n, guess_eigenvector);
-    double complex eigenvalue0 = -1.5 + 0.0*I;
-    double complex eigenvalue = eigenvalue0;
+    double complex eigenvalue0 = -1.0 + 0.0*I;
+    double complex eigenvalue = 0.0 + 0.0*I;
 
     // create identity function
+    fillIdentityN(n, Id);
     // - mew * I
-    scalarByMatrixMultiplication(-1*(eigenvalue), n, n, Id, muId);
+    scalarByMatrixMultiplication(-1*(eigenvalue0), n, n, Id, muId);
     // A + (- mew * I)
-   matrix_addition(n, n, matrixA, muId, AminMuI);
+    matrix_addition(n, n, matrixA, muId, AminMuI);
     GetInverse(n,AminMuI,Ainv);
 
     while (j < max_iterations){
@@ -346,12 +341,11 @@ void inverseIteration(int n, double complex matrixA[n][n]){
                 new_eigenvector[i][0] = new_eigenvector[i][0] / max_val; 
             }  
         printf("Eigenvalue: %f %+f*i \n",creal(eigenvalue),cimag(eigenvalue));
+        eigenvalue = max_val; 
+        //conjugateTranspose(n,1,new_eigenvector,newEigVecT);
+        //matrix_multiplication(n,n, matrixA, n,1,new_eigenvector,Ab);
+        //matrix_multiplication(1,n,newEigVecT,n,1,Ab,eig);
         
-        conjugateTranspose(n,1,new_eigenvector,newEigVecT);
-        matrix_multiplication(n,n, matrixA, n,1,new_eigenvector,Ab);
-        matrix_multiplication(1,n,newEigVecT,n,1,Ab,eig);
-        
-        eigenvalue = eig[0][0]; 
         
         //Keep looping until eigvenvector of nth interation is equal to eigenvector of (n-1)th iteration
         double check = 0.0;
@@ -368,6 +362,7 @@ void inverseIteration(int n, double complex matrixA[n][n]){
 
         //break out of the loop if they are equal 
         if (my_cabs(check) < 1e-6) {
+            //eigenvalue = eigenvalue - eigenvalue0;
             printf("Dominant Eigenvalue: %f %+f*i \n",creal(eigenvalue),cimag(eigenvalue));
             break; 
         }
@@ -383,7 +378,6 @@ void inverseIteration(int n, double complex matrixA[n][n]){
 
 int main() {
     double complex A[3][3] = {{1, 2, 3+I}, {2, 2, 3}, {3-I, 3, 3}};
-    //double complex guess_eigenvector[2][1] = {{1.0 + 0.0*I},{1.0 + 0.0*I}};
     //double complex eigenvalue = 1.0 + 0.0*I; 
     int n=3; 
     printf("Matrix A:\n");
