@@ -14,10 +14,13 @@
 }*/
 
 void LanczosAlgorithm(int d, double complex A[d][d], int itr){
+   // was experimenting with calloc/malloc
    // initialize variables
     int dim = d;
     int iter = itr;
-    double complex q[dim][1];
+    //double complex q[dim][1];
+    double complex (*q)[1];
+    q = calloc(dim, sizeof(*q));
     double complex r[dim][1];
     double complex alpha[1][iter];
     double complex beta[1][iter];
@@ -27,7 +30,9 @@ void LanczosAlgorithm(int d, double complex A[d][d], int itr){
     double complex alphaJ[1][1];
     double complex minusAlphaq[1][1];
     double complex betaJ = 0.0 + 0.0*I;
-    double complex Aq[dim][1];
+    //double complex Aq[dim][1];
+    double complex (*Aq)[1];
+    Aq = calloc(dim, sizeof(*Aq));
     //double complex (*Aq)[1] = malloc(sizeof(double complex[dim][1]));
     double complex betajMin1XV[dim][1];
     int i, j;
@@ -49,8 +54,9 @@ void LanczosAlgorithm(int d, double complex A[d][d], int itr){
     
     // beta1 = ||r||
     betaJ = norm(dim, r);
+   printf("%lf", betaJ);
    
-   // this breaks? :(
+   // this breaks sometimes? :( ********
     beta[0][0] = betaJ; // store beta1
     
     // start loop at j = 2 until betaj = 0
@@ -65,11 +71,12 @@ void LanczosAlgorithm(int d, double complex A[d][d], int itr){
         scalarByMatrixMultiplication(1/betaJ, dim, 1, r, q);
         
         // r = Aq - betaj-1v
-        // breaks here :(
+        // breaks here :(  *********
+
+        matrix_multiplication(dim, dim, A, dim, 1, q, Aq);
+        // error messages used to find location of segfault
         printf("end");
         fflush(stdout);
-        matrix_multiplication(dim, dim, A, dim, 1, q, Aq);
-
         scalarByMatrixMultiplication(-betaJ, dim, 1, v, betajMin1XV);
         matrix_addition(dim, 1, Aq, betajMin1XV, r);
         
@@ -90,6 +97,9 @@ void LanczosAlgorithm(int d, double complex A[d][d], int itr){
         
         if (betaJ == 0){break;}
     }
+    // free pointers
+    free(q);
+    free(Aq);
 
     // get the eigenvalue of T
     double complex T[iter][iter];
@@ -99,14 +109,14 @@ void LanczosAlgorithm(int d, double complex A[d][d], int itr){
     setNormalVec(iter, vecGuess);
     // Next step: Call power iteration to get eigenvalue of T.
     
-    power_iteration(iter, T, vecGuess, &eigenValue);
+    power_iteration(iter, T);
     
-    printf("The dominant eigenvalue of A produced by the Lanczos Algorithm is: %lf %+lf*i \n",creal(eigenValue),cimag(eigenValue));
+    //printf("The dominant eigenvalue of A produced by the Lanczos Algorithm is: %lf %+lf*i \n",creal(eigenValue),cimag(eigenValue));
     printf("This answer took %d iterations in the Lanczos Algorithm.\n",iter);
     
 }
 
-// reference pg. 178 https://people.inf.ethz.ch/arbenz/ewp/Lnotes/chapter10.pdf
+// references pg. 178 https://people.inf.ethz.ch/arbenz/ewp/Lnotes/chapter10.pdf
 // https://www.youtube.com/watch?v=2Y1ZDQw_2zw
 
 
@@ -119,10 +129,12 @@ void setNormalVec(int n, double complex v[n][1]){
     }
 }
 
+// multiplies two matrices of any compatible size
 void matrix_multiplication(int a, int b, double complex matrix1[a][b], int m, int n, double complex matrix2[m][n], double complex matAXmatB[a][n]){
     int i; int j; int k;
+    // error messages used to find source of segfault ****
     printf("In Multiply\n");
-    printf("%d %d %d %d\n", a, b, m, n);
+    //printf("%d %d %d %d\n", a, b, m, n);
     fflush(stdout);
     if(b != m){ //number of columns of matrix1 is not the same as number of rows of matrix2
         printf("Cannot do the multiplication. \n");
@@ -142,8 +154,8 @@ void matrix_multiplication(int a, int b, double complex matrix1[a][b], int m, in
         for(i = 0; i < a; i++){
             for(j = 0; j < n; j++){
                 for(k = 0; k < m; k++){
-                    printf("%d, %d, %d\n", i, j, k);
-                    fflush(stdout);
+                    //printf("%d, %d, %d\n", i, j, k);
+                    //fflush(stdout);
                     matAXmatB[i][j] += matrix1[i][k]*matrix2[k][j];
                 }
             }
@@ -151,6 +163,7 @@ void matrix_multiplication(int a, int b, double complex matrix1[a][b], int m, in
     }
 }
 
+// gets the conjugate transpose of a matrix
 void conjugateTranspose(int n, int m, double complex A[n][m], double complex AH[m][n]){
     int i,j; 
     for (i=0; i<n; i++){
@@ -160,6 +173,7 @@ void conjugateTranspose(int n, int m, double complex A[n][m], double complex AH[
     }
 }
 
+// multiplies a matrix by a scalar
 void scalarByMatrixMultiplication(double complex scalar, int n, int m, double complex A[n][m], double complex scalarXA[n][m]){
     int i; int j; 
 
@@ -170,6 +184,7 @@ void scalarByMatrixMultiplication(double complex scalar, int n, int m, double co
     }
 }
 
+// adds two matrices of the same size
 void matrix_addition(int n, int m, double complex A[n][m], double complex B[n][m], double complex APlusB[n][m]){
     int i; int j; 
 
@@ -180,6 +195,7 @@ void matrix_addition(int n, int m, double complex A[n][m], double complex B[n][m
     }
 }
 
+// takes the complex norm of a vector
 double norm (int n, double complex vec[n][1]){
     double term, sum, sol;  
     int i;
@@ -199,19 +215,18 @@ double norm (int n, double complex vec[n][1]){
     sol = sqrt(sum);
     return sol;
 }
-
+// displays a matrix
 void displayMatrix(int n, int m, double complex A[n][m]){
     int i, j; 
     for (i=0; i<n; i++){
       for (j=0; j<m; j++){
-            //printf("%f ", (float) A[i][j]);
           printf("%.2lf %+.2lfi ", creal(A[i][j]), cimag(A[i][j])); 
       }
       printf("\n");
     }
 }
 
-// check size
+// sets the T matix for Lanczos, puts alphas on the diagonal and betas one above and below the diagonal
 void setT(int n, double complex alpha[1][n], double complex beta[1][n], double complex T[n][n]){
     int i, j; 
     
@@ -230,18 +245,23 @@ void setT(int n, double complex alpha[1][n], double complex beta[1][n], double c
         }
     }
 }
-
+// takes the norm of a double complex value
 double my_cabs(double complex x){
     return sqrt(creal(x)*creal(x) + cimag(x)*cimag(x));
 }
 
-void power_iteration(int n, double complex matrixA[n][n], double complex guess_eigenvector[n][1], double complex *eigenvalue){
+// Luna's power iteration
+void power_iteration(int n, double complex matrixA[n][n]){
     int max_iterations = 100; int j = 0;
+    // normalized vector as starting guess
+    double complex guess_eigenvector[n][1];
+    setNormalVec(n, guess_eigenvector);
+    double complex eigenvalue = 0.0 + 0.0*I;
     while (j < max_iterations){
         double complex new_eigenvector[n][1];
 
         //Multiply matrix A and guess eigenvector
-        matrix_multiplication(n, n, matrixA, n, 1, guess_eigenvector,new_eigenvector); //new_eigenvector is matrixA*guessvectorb
+        matrix_multiplication(n,n,matrixA,n,1,guess_eigenvector,new_eigenvector); //new_eigenvector is matrixA*guessvectorb
         
         //Find the maximum element of new_eigenvector 
         double max_val = my_cabs(new_eigenvector[0][0]); //cabs computes the complex absolute value
@@ -256,8 +276,8 @@ void power_iteration(int n, double complex matrixA[n][n], double complex guess_e
                 new_eigenvector[i][0] = new_eigenvector[i][0] / max_val; 
             }  
 
-        *eigenvalue = max_val; 
-        
+        eigenvalue = max_val; 
+        printf("Dominant Eigenvalue: %lf %+lf*i \n",creal(eigenvalue),cimag(eigenvalue));
         //Keep looping until eigvenvector of nth interation is equal to eigenvector of (n-1)th iteration
         double check = 0.0;
         for (i = 0; i < n; i++) {
@@ -272,6 +292,7 @@ void power_iteration(int n, double complex matrixA[n][n], double complex guess_e
 
         //break out of the loop if they are equal 
         if (my_cabs(check) < 1e-6) {
+            printf("Dominant Eigenvalue: %lf %+lf*i \n",creal(eigenvalue),cimag(eigenvalue));
             break; 
         }
         if (j >= max_iterations){
@@ -279,7 +300,5 @@ void power_iteration(int n, double complex matrixA[n][n], double complex guess_e
             printf("Ignore the rest!\n"); 
         }
     } 
-    printf("Number of iterations inside the Power Iteration: %d \n",j);
-}
-    }
+    printf("Number of iterations: %d \n",j);
 }
