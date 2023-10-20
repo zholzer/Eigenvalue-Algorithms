@@ -302,7 +302,7 @@ void inverseIteration(int n, double complex matrixA[n][n]){
     double complex Id[n][n];
     double complex muId[n][n];
     double complex Ainv[n][n];
-    int max_iterations = 100; int j = 0;
+    int max_iterations = 100; int i, j = 0;
     //double complex bH[n][1]; 
     double complex Ab[n][1];
     double complex eig[1][1];
@@ -310,20 +310,35 @@ void inverseIteration(int n, double complex matrixA[n][n]){
     double complex newEigVecT[1][n];
     // normalized vector as starting guess
     double complex guess_eigenvector[n][1];
+    double complex new_eigenvector[n][1];
     setNormalVec(n, guess_eigenvector);
-    double complex eigenvalue0 = -1.0 + 0.0*I;
     double complex eigenvalue = 0.0 + 0.0*I;
+
+    // run one iteration of Power Algorithm to get guess for eigenvalue
+    matrix_multiplication(n,n, A,n,1,guess_eigenvector,new_eigenvector); //new_eigenvector is matrixA*guessvectorb
+    //Find the maximum element of new_eigenvector 
+    double max_val = my_cabs(new_eigenvector[0][0]); //cabs computes the complex absolute value
+    for (i = 1; i < n; i++){
+        if(my_cabs(new_eigenvector[i][0]) > max_val){
+            max_val = my_cabs(new_eigenvector[i][0]); 
+        } 
+    } 
+    // Normalize the new_eigenvector by dividing it by the maximum element 
+    for (i = 0; i < n; i++) {
+            new_eigenvector[i][0] = new_eigenvector[i][0] / max_val; 
+    }  
+    eigenvalue = max_val; // initial guess for the eigenvalue
 
     // create identity function
     fillIdentityN(n, Id);
     // - mew * I
-    scalarByMatrixMultiplication(-1*(eigenvalue0), n, n, Id, muId);
+    scalarByMatrixMultiplication(-1*(eigenvalue), n, n, Id, muId);
     // A + (- mew * I)
     matrix_addition(n, n, matrixA, muId, AminMuI);
     GetInverse(n,AminMuI,Ainv);
 
     while (j < max_iterations){
-        double complex new_eigenvector[n][1];
+        //double complex new_eigenvector[n][1];
 
         //Multiply matrix A and guess eigenvector
         matrix_multiplication(n,n, Ainv,n,1,guess_eigenvector,new_eigenvector); //new_eigenvector is matrixA*guessvectorb
