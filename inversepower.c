@@ -314,20 +314,23 @@ void inverseIteration(int n, double complex matrixA[n][n]){
     setNormalVec(n, guess_eigenvector);
     double complex eigenvalue = 0.0 + 0.0*I;
 
-    // run one iteration of Power Algorithm to get guess for eigenvalue
-    matrix_multiplication(n,n, A,n,1,guess_eigenvector,new_eigenvector); //new_eigenvector is matrixA*guessvectorb
-    //Find the maximum element of new_eigenvector 
-    double max_val = my_cabs(new_eigenvector[0][0]); //cabs computes the complex absolute value
-    for (i = 1; i < n; i++){
-        if(my_cabs(new_eigenvector[i][0]) > max_val){
-            max_val = my_cabs(new_eigenvector[i][0]); 
-        } 
-    } 
-    // Normalize the new_eigenvector by dividing it by the maximum element 
-    for (i = 0; i < n; i++) {
-            new_eigenvector[i][0] = new_eigenvector[i][0] / max_val; 
-    }  
-    eigenvalue = max_val; // initial guess for the eigenvalue
+    // run a couple iterations of Power Algorithm to get guess for eigenvalue
+    for (i = 0; i < 3; i++){
+        matrix_multiplication(n,n, A,n,1,guess_eigenvector,new_eigenvector); //new_eigenvector is matrixA*guessvectorb
+        //Find the maximum element of new_eigenvector 
+        double max_val = my_cabs(new_eigenvector[0][0]); //cabs computes the complex absolute value
+        for (i = 1; i < n; i++){
+            if(my_cabs(new_eigenvector[i][0]) > max_val){
+                max_val = my_cabs(new_eigenvector[i][0]); 
+            } 
+        }
+    
+        // Normalize the new_eigenvector by dividing it by the maximum element 
+        for (i = 0; i < n; i++) {
+                new_eigenvector[i][0] = new_eigenvector[i][0] / max_val; 
+        }  
+        eigenvalue = max_val; // initial guess for the eigenvalue
+    }
 
     // create identity function
     fillIdentityN(n, Id);
