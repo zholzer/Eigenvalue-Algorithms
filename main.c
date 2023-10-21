@@ -3,7 +3,7 @@
 #include <complex.h>
 #include <string.h>
 #include <stdlib.h>
-#include "functions.h"
+#include "eigenvalueFunctions.h"
 
 int main(void){
     printf("Welcome to the Power Iteration program.\n");
@@ -18,27 +18,27 @@ int main(void){
     case 1:
     // test file one breaks in Lanczos ******
         strcpy(fileName, "testCase1.txt");
-        printf("You chose test file one with a 10 x 10 matrix.\n");
+        printf("You chose test file one with a 3 x 3 matrix.\n");
         break;
 
     case 2:
         strcpy(fileName, "testCase2.txt");
-        printf("You chose test file two with a 3 x 3 matrix.\n");
+        printf("You chose test file two with a 5 x 5 matrix.\n");
         break;
 
     case 3:
         strcpy(fileName, "testCase3.txt");
-        printf("You chose test file three with a 5 x 5 real matrix.\n");
+        printf("You chose test file three with a 10 x 10 real matrix.\n");
         break;
 
     case 4:
         strcpy(fileName, "testCase4.txt");
-        printf("You chose test file four with a 10 x 10 real matrix.\n");
+        printf("You chose test file four with a 20 x 20 real matrix.\n");
         break;
 
     case 5:
         strcpy(fileName, "testCase5.txt");
-        printf("You chose test file five with a 10 x 10 real matrix.\n");
+        printf("You chose test file five with a 50 x 50 real matrix.\n");
         break;
     
     default:
@@ -49,17 +49,17 @@ int main(void){
     // Get size of test file matrix. 
     int i, j;
     double c, n;
-    int count, dim;
+    int dim;
     // Opens file
     FILE *testFile;
     testFile = fopen(fileName, "r");
     // increases count for each long float in test file
+    int count = 0;
     while (1){
         fscanf(testFile, "%lf", &c);
         if(feof(testFile)){break;}
         count++;
     }
-    
     // file consists of two equally sized n by n matrices; 
     // the first matrix is read in as the real values (a of a+bi)
     // the second is read in as the imaginary values (b of a+bi)
@@ -90,8 +90,13 @@ int main(void){
     // done with the file
     fclose(testFile);
     
-    printf("This test file contains the matrix: \n");
-    displayMatrix(dim, dim, A);
+    char disp;
+    printf("Would you like to display the selected matrix? Default is no. (y = yes / n = no) \n");
+    scanf(" %c", &disp);
+    if (disp == 'y'){
+        printf("This test file contains the matrix: \n");
+        displayMatrix(dim, dim, A);
+    }
 
     // allows user to input how many iterations they want Lanczos to run
     int iter;
@@ -99,17 +104,25 @@ int main(void){
     while(booL == 0){
         printf("Input number of iterations of the Lanczos Algorithm as an integer (must be less then %d).\n", dim);
         scanf("%d", &iter);
-        if (iter > dim){
+        if ((iter > dim) || (iter < 1)){
             printf("Must be less then %d. Retry. \n", dim);
         }
         else{booL = 1;}
     }
 
     // calls algorithms
-    //printf("The Power Iteration produces ");
-    //power_iteration(dim, A); // runs with 10 by 10
-    //printf("The Rayleigh Iteration produces ");
-    //rayleighIteration(dim, A); // very slow with 10 by 10
+    printf("The Power Iteration produces ");
+    power_iteration(dim, A); // runs with 10 by 10
+    if (dim < 20){
+        printf("The Inverse Iteration produces ");
+        inverseIteration(dim, A);
+    }
+    else{printf("Too big for the Inverse Algorithm (the inverse is too expensive). \n");}
+    if (dim < 10){
+        printf("The Rayleigh Iteration produces ");
+        rayleighIteration(dim, A); // very slow with 10 by 10
+    }
+    else{printf("Too big for the Rayleigh Algorithm (the inverse is too expensive). \n");}
     printf("The Lanczos Algorithm produces ");
     LanczosAlgorithm(dim, A, iter); // segfault 10 by 10
     // free pointer
