@@ -3,7 +3,7 @@
 #include <complex.h>
 #include <string.h>
 #include <stdlib.h>
-#include "eigenvalueFunctions.h"
+#include "functions.h"
 
 // Luna's power iteration
 void power_iteration(int n, double complex matrixA[n][n]){
