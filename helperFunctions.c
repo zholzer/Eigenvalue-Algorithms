@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <complex.h>
-#include "eigenvalueFunctions.h"
+#include "functions.h"
 
 void conjugateTranspose(int n, int m, double complex A[n][m], double complex AH[m][n]){
     int i,j; 
