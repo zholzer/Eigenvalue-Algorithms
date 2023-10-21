@@ -3,7 +3,7 @@
 #include <complex.h>
 #include <string.h>
 #include <stdlib.h>
-#include "eigenvalueFunctions.h"
+#include "functions.h"
 
 int main(void){
     printf("Welcome to the Power Iteration program.\n");
