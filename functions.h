@@ -1,13 +1,14 @@
 // Main Algorithms
 void power_iteration(int n, double complex matrixA[n][n]);
+void inverseIteration(int n, double complex matrixA[n][n]);
 void rayleighIteration(int n, double complex matrixA[n][n]);
-void LanczosAlgorithm(int d, double complex A[d][d], int itr);
+void LanczosAlgorithm(int dim, double complex A[dim][dim], int iter);
 
 // Functions
 void conjugateTranspose(int n, int m, double complex A[n][m], double complex AH[m][n]);
 double complex det2by2(int n, double complex A[n][n]);
 void displayMatrix(int n, int m, double complex A[n][m]);
-void fillIdentityN(int n, double complex id[n][n])
+void fillIdentityN(int n, double complex id[n][n]);
 void GetCofactor(int N, double complex A[N][N], double complex cof[N-1][N-1], int m, int n);
 double complex GetDeterminant(int N, double complex matrix[N][N]);
 int GetInverse(int N, double complex A[N][N], double complex inverse[N][N]);
