@@ -9,34 +9,45 @@ int main(void){
     printf("Welcome to the Power Iteration program.\n");
 
     // Allows user to switch between our test files.
-    printf("Please choose which test file to run by entering an integer between 1 and 5.\n");
-    int fileNum;
+    printf("Please choose which test file to run by entering an integer between 1 and 5.\nThe matrices are of size 3 x 3, 5 x 5, 10 x 10, 20 x 20, and 50 x 50 respectivly.\n");
+    char fileNum;
     char fileName[15];
     // gets case number from user, currently not in any particular order
-    scanf("%d", &fileNum);
+    int booL0 = 0;
+    while(booL0 == 0){
+        fflush(stdin);
+        scanf(" %c", &fileNum);
+        int temp = fileNum - '0';
+        if (temp >= 1 && temp <= 5){
+            booL0 = 1;
+        }
+        else{printf("Invalid test case selection. Retry. \n");}
+    }
+
+    // switches the file to be read based on input
     switch (fileNum){
-    case 1:
+    case '1':
     // test file one breaks in Lanczos ******
         strcpy(fileName, "testCase1.txt");
         printf("You chose test file one with a 3 x 3 matrix.\n");
         break;
 
-    case 2:
+    case '2':
         strcpy(fileName, "testCase2.txt");
         printf("You chose test file two with a 5 x 5 matrix.\n");
         break;
 
-    case 3:
+    case '3':
         strcpy(fileName, "testCase3.txt");
         printf("You chose test file three with a 10 x 10 real matrix.\n");
         break;
 
-    case 4:
+    case '4':
         strcpy(fileName, "testCase4.txt");
         printf("You chose test file four with a 20 x 20 real matrix.\n");
         break;
 
-    case 5:
+    case '5':
         strcpy(fileName, "testCase5.txt");
         printf("You chose test file five with a 50 x 50 real matrix.\n");
         break;
@@ -89,25 +100,38 @@ int main(void){
     }
     // done with the file
     fclose(testFile);
-    
+    // does the user want to see the matrix? some are very large
     char disp;
     printf("Would you like to display the selected matrix? Default is no. (y = yes / n = no) \n");
-    scanf(" %c", &disp);
-    if (disp == 'y'){
-        printf("This test file contains the matrix: \n");
-        displayMatrix(dim, dim, A);
-    }
-
-    // allows user to input how many iterations they want Lanczos to run
-    int iter;
-    int booL = 0;
-    while(booL == 0){
-        printf("Input number of iterations of the Lanczos Algorithm as an integer (must be less then %d).\n", dim);
-        scanf("%d", &iter);
-        if ((iter > dim) || (iter < 1)){
-            printf("Must be less then %d. Retry. \n", dim);
+    int booL1 = 1;
+    while(booL1 == 1){
+         scanf(" %c", &disp);
+        if (disp == 'y'){
+            printf("This test file contains the matrix: \n");
+            displayMatrix(dim, dim, A);
+            booL1 = 0;
         }
-        else{booL = 1;}
+        else if (disp == 'n'){
+            booL1 = 0;
+        }
+        else{printf("Please input y for yes or n for no. Retry. \n");}
+    }
+   
+    // allows user to input how many iterations they want Lanczos to run
+    printf("Input number of iterations of the Lanczos Algorithm as an integer (must be less then %d).\nThis will determine the size of T, a smaller matrix with the leading eigenvalues of A.\n", dim);
+    int iter, temp;
+    int booL2 = 0;
+    while(booL2 == 0){
+        scanf("%d", &iter);
+        if ((iter < dim) && (iter > 1)){
+            booL2 = 1;
+        }
+        else{
+            printf("Must be less then %d. Retry. \nInput number of iterations of the Lanczos Algorithm as an integer.\n", dim);
+            // https://stackoverflow.com/questions/34165592/scanf-skipped-after-reading-in-integer-in-c-in-while-loop
+            // clears scanf so it asks for input again
+            while((temp = getchar()) != '\n');
+        }
     }
 
     // calls algorithms
