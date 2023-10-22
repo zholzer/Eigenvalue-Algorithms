@@ -15,7 +15,6 @@ int main(void){
     // gets case number from user, currently not in any particular order
     int booL0 = 0;
     while(booL0 == 0){
-        fflush(stdin);
         scanf(" %c", &fileNum);
         int temp = fileNum - '0';
         if (temp >= 1 && temp <= 5){
