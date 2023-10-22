@@ -8,7 +8,7 @@ This cproject folder contains functions.h, helperFunctions.c, main.c, PowerAlgor
     helperFunctions.c is the c file that contains source code for essential tool functions that support the four iteration methods such as inverse of a matrix, transpose of a matrix, identity matrix, etc. 
     PowerAlgorithms.c is the c file that contains source code for power iteration function, inverse iteration function, Rayleigh iteration function and Lanzcos algorithm function. 
     Five test cases are text files that contain a 3x3 matrix, a 5x5 matrix, a 10x10 matrix, a 20x20 matrix, and a 50x50 matrix, respectively. The test cases are in the form of an n by n matrix of real
-    numbers (a's) followed immediatly by an n by n matrix of imaginary values (b's) and then a newline, which together form a matrix with imaginary entries of the form a+ib.
+    numbers (a's) followed immediatly by an n by n matrix of imaginary values (b's) and then a newline, which together form a matrix with imaginary entries of the form a+ib. Entries are delimited by a space.
     README.txt (this file) introduces the project and explains how to run this iteration program. 
     
 Please follow the following steps to run our power iteration program:
