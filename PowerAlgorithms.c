@@ -51,8 +51,7 @@ void power_iteration(int n, double complex matrixA[n][n]){
             break; 
         }
         if (j >= max_iterations){
-            printf("Reached maximum iterations. CANNOT FIND REAL EIGENVECTOR AND EIGENVALUE\n");
-            printf("Ignore the rest!\n"); 
+            printf("the error: Maximum iterations reached. CANNOT FIND REAL EIGENVALUE. Try a smaller size for T.\n");
         }
     } 
     printf("Number of iterations: %d \n",j);
@@ -207,7 +206,7 @@ void rayleighIteration(int n, double complex matrixA[n][n]){
         //Keep looping until eigvenvector of nth interation is equal to eigenvector of (n-1)th iteration
         double check = 0.0;
         for (i = 0; i < n; i++) {
-            check += my_cabs(abs(new_eigenvector[i][0]) - abs(guess_eigenvector[i][0]));
+            check += my_cabs(my_cabs(new_eigenvector[i][0]) - my_cabs(guess_eigenvector[i][0]));
         }
 
         // Update a new eigenvector as guess_eigenvector for the next iteration
@@ -222,8 +221,7 @@ void rayleighIteration(int n, double complex matrixA[n][n]){
             break; 
         }
         if (j >= max_iterations){
-            printf("Reached maximum iterations. CANNOT FIND REAL EIGENVALUE\n");
-            printf("Ignore the rest!\n"); 
+            printf("the error: Maximum iterations reached. CANNOT FIND REAL EIGENVALUE. \n");
         }
     } 
     printf("Number of iterations: %d \n",j);
@@ -328,5 +326,7 @@ void LanczosAlgorithm(int dim, double complex A[dim][dim], int iter){
     
 }
 
+// references pg. 178 https://people.inf.ethz.ch/arbenz/ewp/Lnotes/chapter10.pdf
+// https://www.youtube.com/watch?v=2Y1ZDQw_2zw
 // references pg. 178 https://people.inf.ethz.ch/arbenz/ewp/Lnotes/chapter10.pdf
 // https://www.youtube.com/watch?v=2Y1ZDQw_2zw
