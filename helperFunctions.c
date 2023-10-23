@@ -221,7 +221,7 @@ void GetTranspose(int N, double complex matrix[N][N], double complex matrixT[N][
     {
         for (col = 0; col < N; col++)
         {
-            matrixT[col][row] = matrix[row][col];
+            matrixT[col][row] = matrix[row][col]; //gets the transpose
         }
     }
 
@@ -232,7 +232,7 @@ void matrix_addition(int n, int m, double complex A[n][m], double complex B[n][m
 
     for(i=0; i < n; ++i){
         for(j=0; j < m; ++j){
-            APlusB[i][j] = A[i][j] + B[i][j]; 
+            APlusB[i][j] = A[i][j] + B[i][j]; // adds matrix elements
         }
     }
 }
@@ -264,7 +264,7 @@ void matrix_multiplication(int a, int b, double complex matrix1[a][b], int m, in
 }
 
 double my_cabs(double complex x){
-    return sqrt(creal(x)*creal(x) + cimag(x)*cimag(x));
+    return sqrt(creal(x)*creal(x) + cimag(x)*cimag(x)); // complex absolute value
 }
 
 // takes the complex norm of a vector
@@ -293,11 +293,12 @@ void scalarByMatrixMultiplication(double complex scalar, int n, int m, double co
 
     for(i=0; i < n; ++i){
         for(j=0; j < m; ++j){
-            scalarXA[i][j] = scalar*A[i][j]; 
+            scalarXA[i][j] = scalar*A[i][j]; // multiplies matrix entries by a scalar
         }
     }
 }
 
+// sets a vector with normalized values (1/sqrt(dim))
 void setNormalVec(int n, double complex v[n][1]){
     int i; 
     for (i=0; i<n; i++){
