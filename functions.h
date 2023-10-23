@@ -1,3 +1,6 @@
+// Although header files usually have function descriptions, you will find them in the functions themselves. 
+// This is to highlight the thought process of how we implemented them.
+// Declarations:
 // Main Algorithms
 void power_iteration(int n, double complex matrixA[n][n]);
 void inverseIteration(int n, double complex matrixA[n][n]);
