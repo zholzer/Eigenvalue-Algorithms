@@ -101,7 +101,7 @@ int main(void){
     fclose(testFile);
     // does the user want to see the matrix? some are very large
     char disp;
-    printf("Would you like to display the selected matrix? Default is no. (y = yes / n = no) \n");
+    printf("Would you like to display the selected matrix? (y = yes / n = no) \n");
     int booL1 = 1;
     while(booL1 == 1){
          scanf(" %c", &disp);
