@@ -62,11 +62,7 @@ void inverseIteration(int n, double complex matrixA[n][n]){
     double complex muId[n][n];
     double complex Ainv[n][n];
     int max_iterations = 100; int i, j = 0;
-    //double complex bH[n][1]; 
-    //double complex Ab[n][1];
-    //double complex eig[1][1];
     double complex AminMuI[n][n];
-    //double complex newEigVecT[1][n];
     // normalized vector as starting guess
     double complex guess_eigenvector[n][1];
     double complex new_eigenvector[n][1];
@@ -230,7 +226,6 @@ void rayleighIteration(int n, double complex matrixA[n][n]){
 void LanczosAlgorithm(int dim, double complex A[dim][dim], int iter){
    // was experimenting with calloc/malloc
    // initialize variables
-    //double complex q[dim][1];
     double complex (*q)[1];
     q = calloc(dim, sizeof(*q));
     double complex r[dim][1];
@@ -242,10 +237,8 @@ void LanczosAlgorithm(int dim, double complex A[dim][dim], int iter){
     double complex alphaJ[1][1];
     double complex minusAlphaq[dim][1];
     double complex betaJ = 0.0 + 0.0*I;
-    //double complex Aq[dim][1];
     double complex (*Aq)[1];
     Aq = calloc(dim, sizeof(*Aq));
-    //double complex (*Aq)[1] = malloc(sizeof(double complex[dim][1]));
     double complex betajMin1XV[dim][1];
     int i, j;
     
@@ -267,9 +260,6 @@ void LanczosAlgorithm(int dim, double complex A[dim][dim], int iter){
 
     // beta1 = ||r||
     betaJ = norm(dim, r);
-   //printf("%lf", betaJ);
-   
-   // this breaks sometimes? :( ********
     beta[0][0] = betaJ; // store beta1
     
     // start loop at j = 2 until betaj = 0
@@ -284,7 +274,6 @@ void LanczosAlgorithm(int dim, double complex A[dim][dim], int iter){
         scalarByMatrixMultiplication(1/betaJ, dim, 1, r, q);
         
         // r = Aq - betaj-1v
-        // breaks here :(  *********
        
         matrix_multiplication(dim, dim, A, dim, 1, q, Aq);
         // error messages used to find location of segfault
@@ -326,7 +315,5 @@ void LanczosAlgorithm(int dim, double complex A[dim][dim], int iter){
     
 }
 
-// references pg. 178 https://people.inf.ethz.ch/arbenz/ewp/Lnotes/chapter10.pdf
-// https://www.youtube.com/watch?v=2Y1ZDQw_2zw
 // references pg. 178 https://people.inf.ethz.ch/arbenz/ewp/Lnotes/chapter10.pdf
 // https://www.youtube.com/watch?v=2Y1ZDQw_2zw
