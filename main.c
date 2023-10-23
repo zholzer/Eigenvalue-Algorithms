@@ -75,8 +75,6 @@ int main(void){
     // the second is read in as the imaginary values (b of a+bi)
     // the size of the matrix is the # digits / 2 square rooted since n by n
     dim = sqrt(count/2);
-    //double complex A[dim][dim];
-    //double complex (*A)[dim] = malloc(sizeof(double complex[dim][dim]));
     double complex (*A)[dim];
     A = calloc(dim, sizeof(*A));
     // rewind file pointers to store matrix values
@@ -154,5 +152,7 @@ int main(void){
 }
 
 // references
+// https://stackoverflow.com/questions/36890624/malloc-a-2d-array-in-c
+//stackoverflow.com/questions/29977084/calloc-a-two-dimensional-array
 // https://stackoverflow.com/questions/36890624/malloc-a-2d-array-in-c
 //stackoverflow.com/questions/29977084/calloc-a-two-dimensional-array
